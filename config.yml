@@ -1,0 +1,92 @@
+---
+# Basic application configuration
+application:
+  name: "hyp3rbridg3"
+  version: "1.0.0"
+  description: "A Python bridge to forward messages from those pesky Telegram channels to a shiny Discord channel, because why not?"
+  # Whether to enable debug mode, it will increase the verbosity of the logs and the exceptions will be raised instead of being logged
+  debug: True
+  # healtcheck interval in seconds
+  healthcheck_interval: 10
+  # The time in seconds to wait before forwarding each missed message
+  recoverer_delay: 60
+  # Enable the anti-spam feature
+  anti_spam_enabled: False
+  # The time in seconds to wait before forwarding a message with the same content
+  anti_spam_similarity_timeframe: 0
+  # Anti spam similarity threshold (set 0 to 1, with 1 being identical)
+  anti_spam_similarity_threshold: 0.8
+
+# Management API configuration
+api:
+  enabled: False
+  # Enable the Telegram MFA login via the management API
+  telegram_login_enabled: True
+  # The file to store the Telegram code and MFA password
+  telegram_auth_file: "telegram_auth.json"
+  # The Telegram auth request expiration in seconds
+  telegram_auth_request_expiration: 300
+  # Allow CORS requests from these origins
+  cors_origins: ["*"]
+
+# logger setup
+logger:
+  level: "DEBUG" # NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file_max_bytes: 10485760 # 10MB
+  file_backup_count: 5
+  # format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  format: "%(asctime)s %(levelprefix)s %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
+  # Whether to log to console or not
+  console: True # set to true to enable console logging and disable file based logging
+
+# Telegram configuration
+telegram:
+  # Your Telegram phone number | With quotes
+  phone: "+48530136639"
+  # Your Telegram password (Two-step verification) | With quotes
+  password: "<your password>"
+  # This has to be an integer. Read more [here](https://core.telegram.org/api/obtaining_api_id) | No quotes
+  api_id: 25845675
+  # Long 32 characters hash identifier. Read more [here](https://core.telegram.org/api/obtaining_api_id) | With quotes
+  api_hash: "a0ad0a1f7a6eee668c59bbbf24f38acd"
+  # Whether to log the conversations that aren't available for forwarding (private chats, etc.)
+  log_unhandled_conversations: True
+  # Subscribe to EditMessage events to update the message on Discord
+  subscribe_to_edit_events: True
+  # Subscribe to DeleteMessage events to delete the message on Discord
+  subscribe_to_delete_events: True
+
+# Discord configuration
+discord:
+  # Discord Bot Token. Go create a bridge on discord. | No quotes
+  bot_token: "MTMxNjg1MzEzODMyNTc2NjI0NQ.G9kjs5.i5_JRZNzDCEO18-KrZj0ltIe7JfRHRxNo7t4g8"
+  # built-in roles in discord, they need special attention when parsing thee name to mention
+  built_in_roles: ["everyone", "here", "@Admin"]
+  # Discord Client max tolerable latency
+  max_latency: 0.5
+
+# OpenAI configuration
+openai:
+  enabled: False
+  # OpenAI API Key and Organization. Read more [here](https://beta.openai.com/docs/api-reference)
+  api_key: "<your openai api key>"
+  organization: "<your openai organization>"
+  # The prompt to use for OpenAI, the #text_to_parse will be appended to this prompt
+  sentiment_analysis_prompt:
+    - "Analyze the following text to determine its sentiment: #text_to_parse.\n\n"
+    - "<add the rest of your prompt, if any, here>.\n\n"
+    - "<add the rest of your prompt, if any, here>.\n\n"
+
+# The channels map to discord channels.
+telegram_forwarders:
+  - forwarder_name: "smartwalletfollowing"
+    tg_channel_id: 2436203626
+    discord_channel_id: 1316830779359367261
+    strip_off_links: False # whether to strip off links from the message
+    mention_everyone: False
+    forward_everything: True # whether forwarding everything regardless the hashtag
+    forward_hashtags:
+      - name: "#example1"
+        override_mention_everyone: True
+      - name: "#example6"
